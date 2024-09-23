@@ -13,6 +13,8 @@ resource.Init(config)
 ```
 3、路由集成中间件
 ```
+GrantType: authorization_code client_credentials
+
 route.GET("/admin", middleware.Oauth2ResourceMiddleware([]string{"openid","profile"}, []string{}), func(c *gin.Context) {  
     c.JSON(200, gin.H{"message": "只有管理员可以访问"})  
 })
