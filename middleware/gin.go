@@ -9,11 +9,12 @@ import (
 
 func Oauth2ResourceMiddleware(scopes []string, grantTypes []string) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		if len(scopes) == 0 {
+		if scopes == nil || len(scopes) == 0 {
 			c.IndentedJSON(http.StatusUnauthorized, common.Result{
 				Code: 401,
 				Msg:  common.UNAUTHORIZED_ACCESS,
 			})
+			return
 		}
 		accessToken, err := resource.Instance.ValidationBearerToken(c.Request)
 		if err != nil {
@@ -21,20 +22,23 @@ func Oauth2ResourceMiddleware(scopes []string, grantTypes []string) gin.HandlerF
 				Code: 401,
 				Msg:  err.Error(),
 			})
+			return
 		}
 		if !accessToken.HasScopes(scopes...) {
 			c.IndentedJSON(http.StatusUnauthorized, common.Result{
 				Code: 401,
 				Msg:  common.UNAUTHORIZED_ACCESS,
 			})
+			return
 		}
-		if len(grantTypes) > 0 && !accessToken.HasGrantType(grantTypes...) {
+		if grantTypes != nil && len(grantTypes) > 0 && !accessToken.HasGrantType(grantTypes...) {
 			c.IndentedJSON(http.StatusUnauthorized, common.Result{
 				Code: 401,
 				Msg:  common.UNAUTHORIZED_ACCESS,
 			})
+			return
 		}
-		c.Set("accessToken", accessToken) // 从请求头中获取Token
+		c.Set("accessToken", accessToken)
 		c.Next()
 	}
 }
