@@ -14,6 +14,7 @@ func Oauth2ResourceMiddleware(scopes []string, grantTypes []string) gin.HandlerF
 				Code: 401,
 				Msg:  common.UNAUTHORIZED_ACCESS,
 			})
+			c.Abort()
 			return
 		}
 		accessToken, err := resource.Instance.ValidationBearerToken(c.Request)
@@ -22,6 +23,7 @@ func Oauth2ResourceMiddleware(scopes []string, grantTypes []string) gin.HandlerF
 				Code: 401,
 				Msg:  err.Error(),
 			})
+			c.Abort()
 			return
 		}
 		if !accessToken.HasScopes(scopes...) {
@@ -29,6 +31,7 @@ func Oauth2ResourceMiddleware(scopes []string, grantTypes []string) gin.HandlerF
 				Code: 401,
 				Msg:  common.UNAUTHORIZED_ACCESS,
 			})
+			c.Abort()
 			return
 		}
 		if grantTypes != nil && len(grantTypes) > 0 && !accessToken.HasGrantType(grantTypes...) {
@@ -36,6 +39,7 @@ func Oauth2ResourceMiddleware(scopes []string, grantTypes []string) gin.HandlerF
 				Code: 401,
 				Msg:  common.UNAUTHORIZED_ACCESS,
 			})
+			c.Abort()
 			return
 		}
 		c.Set("accessToken", accessToken)
