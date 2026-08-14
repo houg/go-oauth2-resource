@@ -7,7 +7,7 @@ go get -u github.com/houg/go-oauth2-resource
 
 2、初始化
 ```
-jwksURL := "https://impre.zdxlz.com/seal/oauth2/jwks"
+jwksURL := "https://127.0.0.1:8999/seal/oauth2/jwks"
 config := resource.NewConfig(jwksURL, true)
 resource.Init(config)
 ```
